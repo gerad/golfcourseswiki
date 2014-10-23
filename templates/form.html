@@ -1,0 +1,112 @@
+<div class="container">
+  <form role="form" class="course-form">
+
+    <!-- Course Name -->
+    <div class="form-group">
+      <label for="course-name">Name</label>
+      <input type="text" class="form-control" id="course-name" placeholder="Course name" gcw-google-places-autocomplete="placeAutocomplete(details)" ng-model=name>
+    </div>
+
+    <!-- Course Address -->
+    <div class="form-group">
+      <label for="course-address">Address</label>
+      <input type="Text" class="form-control" id="course-address" placeholder="Course address" ng-model=address>
+    </div>
+
+    <!-- Course Phone -->
+    <div class="form-group">
+      <label for="course-phone">Phone</label>
+      <input type="Text" class="form-control" id="course-phone" placeholder="Course phone" ng-model=phone>
+    </div>
+
+    <!-- Course Website -->
+    <div class="form-group">
+      <label for="course-website">Website</label>
+      <input type="Text" class="form-control" id="course-website" placeholder="Course website" ng-model=website>
+    </div>    
+
+    <div class="form-group">
+      <label class="sr-only">Number of Holes</label>
+      <div>
+        <label class="radio-inline">
+          <input type="radio" ng-model="numberOfHoles" ng-value=9> 9 holes
+        </label>
+        <label class="radio-inline">
+          <input type="radio" ng-model="numberOfHoles" ng-value=18> 18 holes
+        </label>
+      <div>
+    </div>
+
+    <div class="form-group">
+      <label class="sr-only">Hole Info</label>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="text-center" rowspan="2">Hole #</th>
+            <th rowspan="2"></th>
+            <th class="text-center" colspan="2">Par</th>
+            <th rowspan="2"></th>
+            <!-- tee headers -->
+            <th rowspan="2" class="text-center tee-header" ng-repeat="tee in tees">
+              <div class="tee-actions tee-actions-before">
+                <a href="" ng-click="addTeeBefore(tee)"><i class="fa fa-plus-square-o"></i></a>
+                <a href="" ng-click="removeTee(tee)"><i class="fa fa-minus-square-o"></i></a>
+              </div>
+ 
+              <div colorpicker colorpicker-with-input="true" class="tee-box-swatch" ng-style="{ 'background-color': tee.color }" ng-model="tee.color"></div>
+              <input type="text" class="form-control input-sm" placeholder="Name" ng-model="tee.name">
+
+              <div class="tee-actions tee-actions-after">
+                <a href="" ng-click="removeTee(tee)"><i class="fa fa-minus-square-o"></i></a>
+                <a href="" ng-click="addTeeAfter(tee)"><i class="fa fa-plus-square-o"></i></a>
+              </div>
+            </th>
+            <!-- end tee headers -->
+            <th rowspan="2"></th>
+            <th class="text-center" colspan="2">Handicap</th>
+          </tr>
+          <tr>
+            <th class="text-center">Men&rsquo;s</th>
+            <th class="text-center">Women&rsquo;s</th>
+            <th class="text-center">Men&rsquo;s</th>
+            <th class="text-center">Women&rsquo;s</th>
+          </tr>
+        </thead>
+        <tbody gcw-tab-index-group>
+          <tr ng-repeat-start="hole in holes | limitTo:numberOfHoles track by $index">
+            <td>{{$index + 1}}</td>
+            <td><!-- spacer --></td>
+            <td><input type="text" class="form-control" ng-model="pars.mens[$index]" gcw-tab-index="tabIndexFor($index, 0)"></td>
+            <td><input type="text" class="form-control" ng-model="pars.womens[$index]" gcw-tab-index="tabIndexFor($index, 1)"></td>
+            <td><!-- spacer --></td>
+            <td ng-repeat="tee in tees">
+              <input type="text" class="form-control" ng-model="distances[$index][$parent.$index]" gcw-tab-index="tabIndexFor($parent.$index, $index + 2)">
+            </td>
+            <td><!-- spacer --></td>
+            <td ng-class="{'has-error': handicapErrors.mens[$index]}">
+              <input type="text" class="form-control" ng-model="handicaps.mens[$index]" gcw-tab-index="tabIndexFor($index, 2 + tees.length)">
+            </td>
+            <td ng-class="{'has-error': handicapErrors.womens[$index]}">
+              <input type="text" class="form-control" ng-model="handicaps.womens[$index]" gcw-tab-index="tabIndexFor($index, 3 + tees.length)">
+            </td>
+          <tr>
+          <tr ng-repeat-end ng-if="!(($index + 1) % 9)">
+            <th class="nowrap">{{ $index < 9 ? 'Front' : 'Back' }}</th>
+            <th><!-- spacer --></th>
+            <th>{{sumThrough(pars.mens, $index) | number: 0}}</th>
+            <th>{{sumThrough(pars.womens, $index) | number: 0}}</th>
+            <th><!-- spacer --></th>
+            <th ng-repeat="tee in tees">
+              {{sumThrough(distances[$index], $parent.$index) | number: 0}}
+            </th>
+            <th><!-- spacer --></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="submit" class="btn btn-primary">Add course</button>
+    <a class="btn btn-default" href="#/">Cancel</a>
+  </form>
+</div>

@@ -1,0 +1,51 @@
+/* common styles */
+
+.nowrap {
+   white-space: nowrap;
+}
+
+.tee-box-swatch {
+  border: 1px solid #DDD;
+  border-radius: 15px;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+
+/* course form styles */
+
+.course-form .tee-header {
+  position: relative;
+}
+
+.course-form .tee-box-swatch {
+  cursor: pointer;
+}
+
+.course-form .tee-actions {
+  position: absolute;
+  width: 40%;
+  height: 100%;
+  top: 0;
+}
+.course-form .tee-actions:before {
+  display: block;
+  height: 14px;
+  content: "";
+}
+.course-form .tee-actions a {
+  display: none;
+  font-size: small;
+}
+
+.course-form .tee-actions:hover a {
+  display: inline;
+}
+
+.course-form .tee-actions-before {
+  left: 0;
+}
+
+.course-form .tee-actions-after {
+  right: 0;
+}

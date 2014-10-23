@@ -1,0 +1,24 @@
+{
+  "name": "golfcourseswiki",
+  "version": "0.0.0",
+  "description": "A free golf course database that anyone can edit.",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "http://golfcourseswiki.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.3.0",
+    "angular-bootstrap": "~0.11.2",
+    "angular": "~1.3.0",
+    "bootstrap": "~3.2.0",
+    "angular-bootstrap-colorpicker": "~3.0.8",
+    "font-awesome": "~4.2.0"
+  }
+}
