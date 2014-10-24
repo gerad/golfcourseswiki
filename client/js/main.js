@@ -1,5 +1,5 @@
 var app = angular.module('golfCoursesWiki', [
-  'ngRoute', 'colorpicker.module'
+  'ngRoute', 'ngResource', 'colorpicker.module'
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -13,7 +13,7 @@ app.controller('HomeCtrl', ['$scope', function($scope) {
   $scope.timeAgo = "moments ago";
 }]);
 
-app.controller('NewCtrl', ['$scope', function($scope) {
+app.controller('NewCtrl', ['$scope', 'Course', function($scope, Course) {
   $scope.tees = [
     { name: "Blue", color: "#0000ff" },
     { name: "White", color: "#ffffff" },
@@ -138,7 +138,7 @@ app.controller('NewCtrl', ['$scope', function($scope) {
   };
 }]);
 
-app.directive('gcwSearch', ['$http', function($http) {
+app.directive('gcwSearch', ['$http', 'Course', function($http, Course) {
   function controller($scope) {
     $scope.search = function() {
       if (!$scope.query) {
@@ -146,9 +146,8 @@ app.directive('gcwSearch', ['$http', function($http) {
         delete $scope.searching;
       } else {
         $scope.searching = true;
-        $http
-          .get('search.json', { params: { query: $scope.query }})
-          .success(function(data) { $scope.courses = []; /* data; */ })
+        $scope.courses = Course.search({ query: $scope.query });
+        $scope.courses.$promise
           .finally(function() { $scope.searching = false; });
       }
     };
@@ -269,3 +268,9 @@ app.directive('gcwGooglePlacesAutocomplete', function() {
     link: link
   };
 });
+
+app.factory('Course', ['$resource', function($resource) {
+  return $resource('/courses/:id', null, {
+    'search': { url: '/search', isArray: true }
+  });
+}]);

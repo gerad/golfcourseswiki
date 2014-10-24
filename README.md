@@ -27,6 +27,7 @@ A free database of golf courses that anyone can edit.
 * bootstrap
 * express
 * mongodb
+* node
 
 ### Licence
 

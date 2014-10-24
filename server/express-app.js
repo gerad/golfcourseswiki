@@ -4,21 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongo = require('./modules/mongo-middleware');
 
 var app = express();
-var mongoMiddleware = require('./modules/mongo-middleware');
 
 // TODO precompile assets for production
 var clientPath = path.join(__dirname, '..', 'client');
-
-// TODO different mongodb:// url for production
-app.use(mongoMiddleware("mongodb://localhost:27017/golfcourseswiki"));
 
 app.use(favicon(path.join(clientPath, 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(clientPath));
+
+// TODO different mongodb:// url for production
+app.use(mongo("mongodb://localhost:27017/golfcourseswiki"));
 
 // dynamic routes
 app.use('/search', require('./search'));
