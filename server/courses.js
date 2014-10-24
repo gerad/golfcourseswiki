@@ -1,21 +1,48 @@
 var express = require('express');
+var ObjectId = require('mongodb').BSONPure.ObjectID;
 var courses = express.Router();
+
+// show
+courses.get('/:id', function(req, res, next) {
+  res.json(req.course);
+});
+
+// create
+courses.post('/', function(req, res, next) {
+  var courses = req.db.collection('courses');
+
+  // TODO wayyy unsafe
+  courses.insert(req.body, function(err, docs) {
+    if (err) { return next(err); }
+
+    res.redirect(docs[0]._id);
+  });
+});
+
+// update
+courses.put('/:id', function(req, res, next) {
+  next(); // TODO
+  res.status(404).end();
+});
 
 // http://expressjs.com/api.html#router.param
 courses.param(':id', function(req, res, next, id) {
-  next();
-});
+  if (!ObjectId.isValid(id)) { return next(); }
 
-courses.get('/:id', function(req, res, next) {
-  res.json(req.params);
-});
+  var courses = req.db.collection('courses');
 
-courses.post('/', function(req, res, next) {
-  res.status(404).end();
-});
+  courses.findOne({ _id: ObjectId(id) }, function(err, course) {
+    if (err) { return next(err); }
 
-courses.put('/:id', function(req, res, next) {
-  res.status(404).end();
+    if (!course) {
+      err = new Error('Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    req.course = course;
+    next();
+  });
 });
 
 module.exports = courses;

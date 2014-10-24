@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
+var db = require('./db');
 
 // TODO change this production
 var clientPath = path.join(__dirname, '..', 'client');
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use(express.static(clientPath));
 
 // dynamic routes
+app.use(db("mongodb://localhost:27017/golfcourseswiki").middleware);
 app.use('/search', require('./search'));
 app.use('/courses', require('./courses'));
 
