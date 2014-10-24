@@ -10,10 +10,10 @@ var clientPath = path.join(__dirname, '..', 'client'); // TODO change in product
 
 // view engine setup
 
-// app.use(favicon(path.join(clientPath, 'favicon.ico')));
-// app.use(logger('dev'));
-// app.use(bodyParser.json());
-// app.use(cookieParser());
+app.use(favicon(path.join(clientPath, 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(express.static(clientPath));
 
 // dynamic routes
