@@ -29,7 +29,6 @@ app.controller('NewCtrl', ['$scope', function($scope) {
   $scope.holes = new Array($scope.numberOfHoles);
 
   $scope.placeAutocomplete = function(details) {
-    console.log(details);
     $scope.name = details.name;
     $scope.phone = details.formatted_phone_number;
     $scope.address = details.formatted_address;

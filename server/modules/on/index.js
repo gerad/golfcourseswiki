@@ -1,54 +1,13 @@
-/*
- * # on.js
- * 
- * simple, safe, fast events
- * 
- * ### Usage
- * 
- * ```javascript
- * var On = require('on');
- * var thing = { on: On('ready') };
- * 
- * thing.on.ready(function() { console.log('ready!'); });
- * thing.on.ready.fire(); // => 'ready!'
- * ```
- * 
- * ## API
- * 
- * ### `on.<name>`
- * 
- * adds a callback to be notified when the <name> event occurs
- * 
- * ```javascript
- * thing.on.ready(function() { console.log("hi"); });
- * ```
- * 
- * ### `on.<name>.fire`
- * 
- * notifies all callbacks the <name> event has occurred
- * 
- * ```javascript
- * thing.on.ready.fire() // "hi"
- * ```
- * 
- * ### `on.<name>.trip`
- * 
- * notifies callbacks that <name> event has occurred, and additionally
- * immediately notifies new listeners that event has occurred
- * 
- * ```javascript
- * thing.on.ready.trip()
- * thing.on.ready(function() { console.log("hi"); }) // 'hi'
- * ```
- */
 function On() {
   var listeners = {};
   var self = {};
 
+  // add an on.{{name}} for each of the arguments
   for (var i = 0, l = arguments.length; i < l; i++) {
     add(arguments[i]);
   }
 
+  // add - create an on.{{name}} function for the provided name
   function add(name) {
     if (!(name in listeners)) { listeners[name] = []; }
 

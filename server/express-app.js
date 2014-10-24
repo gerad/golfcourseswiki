@@ -6,10 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-var db = require('./db');
+var mongoMiddleware = require('./modules/mongo-middleware');
 
-// TODO change this production
+// TODO precompile assets for production
 var clientPath = path.join(__dirname, '..', 'client');
+
+// TODO different mongodb:// url for production
+app.use(mongoMiddleware("mongodb://localhost:27017/golfcourseswiki"));
 
 app.use(favicon(path.join(clientPath, 'favicon.ico')));
 app.use(logger('dev'));
@@ -18,7 +21,6 @@ app.use(cookieParser());
 app.use(express.static(clientPath));
 
 // dynamic routes
-app.use(db("mongodb://localhost:27017/golfcourseswiki").middleware);
 app.use('/search', require('./search'));
 app.use('/courses', require('./courses'));
 

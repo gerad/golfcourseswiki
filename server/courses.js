@@ -2,21 +2,22 @@ var express = require('express');
 var ObjectId = require('mongodb').BSONPure.ObjectID;
 var courses = express.Router();
 
-// show
-courses.get('/:id', function(req, res, next) {
-  res.json(req.course);
-});
-
 // create
 courses.post('/', function(req, res, next) {
   var courses = req.db.collection('courses');
 
-  // TODO wayyy unsafe
+  // TODO wayyy unsafe to blindly insert req.body
   courses.insert(req.body, function(err, docs) {
     if (err) { return next(err); }
 
     res.redirect(docs[0]._id);
   });
+});
+
+
+// show
+courses.get('/:id', function(req, res, next) {
+  res.json(req.course);
 });
 
 // update
