@@ -6,9 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-var clientPath = path.join(__dirname, '..', 'client'); // TODO change in production
 
-// view engine setup
+// TODO change this production
+var clientPath = path.join(__dirname, '..', 'client');
 
 app.use(favicon(path.join(clientPath, 'favicon.ico')));
 app.use(logger('dev'));
@@ -17,7 +17,8 @@ app.use(cookieParser());
 app.use(express.static(clientPath));
 
 // dynamic routes
-
+app.use('/search', require('./search'));
+app.use('/courses', require('./courses'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -32,20 +33,19 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.json({
+      status: err.status,
       message: err.message,
-      error: err
-    });
+      stack: err.stack.split(/\n\s*/) });
   });
 }
 
 // production error handler - no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.json({
+    status: err.status,
+    message: err.message });
 });
 
 module.exports = app;
