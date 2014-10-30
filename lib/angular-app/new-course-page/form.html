@@ -84,10 +84,10 @@
             </td>
             <td><!-- spacer --></td>
             <td ng-class="{'has-error': handicapErrors.mens[$index]}">
-              <input type="text" class="form-control" ng-model="course.handicaps.mens[$index]" gcw-tab-index="tabIndexFor($index, 2 + tees.length)">
+              <input type="text" class="form-control" ng-model="course.handicaps.mens[$index]" gcw-tab-index="tabIndexFor($index, 2 + course.tees.length)">
             </td>
             <td ng-class="{'has-error': handicapErrors.womens[$index]}">
-              <input type="text" class="form-control" ng-model="course.handicaps.womens[$index]" gcw-tab-index="tabIndexFor($index, 3 + tees.length)">
+              <input type="text" class="form-control" ng-model="course.handicaps.womens[$index]" gcw-tab-index="tabIndexFor($index, 3 + course.tees.length)">
             </td>
           <tr>
           <tr ng-repeat-end ng-if="!(($index + 1) % 9)">
