@@ -14,30 +14,75 @@ app.controller('HomeCtrl', ['$scope', function($scope) {
 }]);
 
 app.controller('NewCtrl', ['$scope', 'Course', function($scope, Course) {
-  $scope.tees = [
+
+  // === scope variable setup ===
+
+  $scope.course = new Course;
+
+  $scope.holeNumbers = [];
+  for (var i = 0; i < 18; i++) { $scope.holeNumbers.push(i + 1); }
+
+  $scope.course.addTees([
     { name: "Blue", color: "#0000ff" },
     { name: "White", color: "#ffffff" },
-    { name: "Red", color: "#ff0000" }];
-  $scope.distances = [];
-  for (var _ in $scope.tees) { $scope.distances.push([]); }
+    { name: "Red", color: "#ff0000" }]);
+  $scope.course.numberOfHoles = 18;
 
-  $scope.pars = { mens: [], womens: [] };
-  $scope.handicaps = { mens: [], womens: [] };
-  $scope.handicapErrors = { mens: [], womens: [] };
-
-  $scope.numberOfHoles = 18;
-  $scope.holes = new Array($scope.numberOfHoles);
+  // === course name autocomplete widget ===
 
   $scope.placeAutocomplete = function(details) {
-    $scope.name = details.name;
-    $scope.phone = details.formatted_phone_number;
-    $scope.address = details.formatted_address;
-    $scope.website = details.website;
+    $scope.course.name = details.name;
+    $scope.course.phone = details.formatted_phone_number;
+    $scope.course.address = details.formatted_address;
+    $scope.course.website = details.website;
   };
+
+  // === course tee box header widget ===
+
+  function newTee() { return { name: null, color: '#000000' }; }
+
+  $scope.addTeeBefore = function(tee) {
+    $scope.course.addTeeBefore(newTee(), tee);
+  };
+
+  $scope.addTeeAfter = function(tee) {
+    $scope.course.addTeeAfter(newTee(), tee);
+  };
+
+  $scope.removeTee = function(tee) {
+    $scope.course.removeTee(tee);
+
+    // ensure at least one tee is always present
+    if ($scope.course.tees.length <= 0) {
+      $scope.course.addTee(newTee());
+    }
+  };
+
+  // === course hole editor widget ===
+
+  $scope.tabIndexFor = function(hole, column) {
+    // 4 columns for mens/womens par/handicap + a column for each tee
+    var totalColumnCount = 4 + $scope.course.tees.length;
+
+    // 9 holes per group * number of columns per group
+    var totalInputCount = 9 * totalColumnCount;
+
+    var holeOffset = hole % 9;
+    var groupOffset = Math.floor(hole / 9) * totalInputCount;
+    var columnOffset = column * 9;
+
+    return groupOffset + holeOffset + columnOffset;
+  };
+
+  // === handicap validation ===
+
+  $scope.handicapErrors = { mens: [], womens: [] };
+  $scope.$watch('course.handicaps.mens', handicapValidator('mens'));
+  $scope.$watch('course.handicaps.womens', handicapValidator('womens'));
 
   function handicapValidator(kind) {
     return function() {
-      var handicaps = $scope.handicaps[kind];
+      var handicaps = $scope.course.handicaps[kind];
       var errors = $scope.handicapErrors[kind];
       var prev, parity;
 
@@ -88,8 +133,7 @@ app.controller('NewCtrl', ['$scope', 'Course', function($scope, Course) {
     }
   }
 
-  $scope.$watch("handicaps.mens", handicapValidator("mens"), true);
-  $scope.$watch("handicaps.womens", handicapValidator("womens"), true);
+  // === course side totals ===
 
   $scope.sumThrough = function(array, index) {
     var ret = 0;
@@ -99,42 +143,10 @@ app.controller('NewCtrl', ['$scope', 'Course', function($scope, Course) {
     return ret;
   };
 
-  function addTeeAt(index) {
-    $scope.tees.splice(index, 0, { name: null, color: "#000000" });
-    $scope.distances.splice(index, 0, []);
-  }
+  // === form submission ===
 
-  function removeTeeAt(index) {
-    $scope.tees.splice(index, 1);
-    $scope.distances.splice(index, 1);
-  }
-
-  $scope.addTeeBefore = function(tee) {
-    addTeeAt($scope.tees.indexOf(tee));
-  }
-
-  $scope.addTeeAfter = function(tee) {
-    addTeeAt($scope.tees.indexOf(tee) + 1);
-  };
-
-  $scope.removeTee = function(tee) {
-    removeTeeAt($scope.tees.indexOf(tee));
-    // ensure at least one tee is always present
-    if ($scope.tees.length <= 0) { addTeeAt(0); }
-  };
-
-  $scope.tabIndexFor = function(hole, column) {
-    // 4 columns for mens/womens par/handicap + a column for each tee
-    var totalColumnCount = 4 + $scope.tees.length;
-
-    // 9 holes per group * number of columns per group
-    var totalInputCount = 9 * totalColumnCount;
-
-    var holeOffset = hole % 9;
-    var groupOffset = Math.floor(hole / 9) * totalInputCount;
-    var columnOffset = column * 9;
-
-    return groupOffset + holeOffset + columnOffset;
+  $scope.add = function(course) {
+    course.$save()
   };
 }]);
 
@@ -253,6 +265,7 @@ app.directive('gcwTabIndex', function() {
 
 app.directive('gcwGooglePlacesAutocomplete', function() {
   function link(scope, element, attrs) {
+    if (typeof google === 'undefined') { return; }
     var options = { types: ['establishment'], componentRestrictions: [] };
     autocomplete = new google.maps.places.Autocomplete(element[0], options);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
@@ -270,7 +283,56 @@ app.directive('gcwGooglePlacesAutocomplete', function() {
 });
 
 app.factory('Course', ['$resource', function($resource) {
-  return $resource('/courses/:id', null, {
+  var CourseResource = $resource('/courses/:id', null, {
     'search': { url: '/search', isArray: true }
   });
+
+  var Course = function Course() {
+    this.tees = [];
+    this.distances = [];
+    this.pars = { mens: [], womens: [] };
+    this.handicaps = { mens: [], womens: [] };
+  };
+
+  Course.prototype.addTeeAt = function(tee, index) {
+    this.tees.splice(index, 0, tee);
+    this.distances.splice(index, 0, []);
+  };
+
+  Course.prototype.addTeeBefore = function(tee, nextTee) {
+    this.addTeeAt(tee, this.tees.indexOf(nextTee));
+  }
+
+  Course.prototype.addTeeAfter = function(tee, prevTee) {
+    this.addTeeAt(tee, this.tees.indexOf(prevTee) + 1);
+  };
+
+  Course.prototype.addTee = function(tee) {
+    this.addTeeAt(tee, this.tees.length);
+  }
+
+  Course.prototype.addTees = function(tees) {
+    for (var i = 0, l = tees.length; i < l; ++i) {
+      this.addTee(tees[i]);
+    }
+  }
+
+  Course.prototype.removeTeeAt = function(index) {
+    this.tees.splice(index, 1);
+    this.distances.splice(index, 1);
+  };
+
+  Course.prototype.removeTee = function(tee) {
+    this.removeTeeAt(this.tees.indexOf(tee));
+  };
+
+  // combine the course with the resource
+  function CourseCombined() {
+    CourseResource.apply(this, arguments);
+    Course.apply(this, arguments);
+  }
+  CourseCombined.prototype = Object.create(CourseResource.prototype);
+  angular.extend(CourseCombined.prototype, Course.prototype);
+
+  return CourseCombined;
 }]);

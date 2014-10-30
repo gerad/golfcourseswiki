@@ -1,5 +1,5 @@
 var http = require('http');
-var app = require('./server/express-app');
+var app = require('gcw/express-app');
 var port = (process.env.NODE_ENV === 'production') ? 80 : 6018;
 
 http.createServer(app).listen(port, function(err) {
