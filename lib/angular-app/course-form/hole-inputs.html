@@ -1,0 +1,59 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th class="text-center" rowspan="2">Hole #</th>
+      <th rowspan="2"></th>
+      <th class="text-center" colspan="2">Par</th>
+      <th rowspan="2"></th>
+      <!-- tee headers -->
+      <th rowspan="2" class="text-center tee-header" ng-repeat="tee in course.tees">
+        <gcw-tee-box-input></gcw-tee-box-input>
+      </th>
+      <!-- end tee headers -->
+      <th rowspan="2"></th>
+      <th class="text-center" colspan="2">Handicap</th>
+    </tr>
+    <tr>
+      <th class="text-center">Men&rsquo;s</th>
+      <th class="text-center">Women&rsquo;s</th>
+      <th class="text-center">Men&rsquo;s</th>
+      <th class="text-center">Women&rsquo;s</th>
+    </tr>
+  </thead>
+  <tbody gcw-tab-index-group>
+    <tr ng-repeat-start="holeNumber in holeNumbers">
+      <td>{{holeNumber}}</td>
+      <td><!-- spacer --></td>
+      <td>
+        <input type="text" class="form-control" gcw-hole-par-input par-type="mens" hole-number="{{holeNumber}}" gcw-hole-tab-index="0">
+      </td>
+      <td>
+        <input type="text" class="form-control" gcw-hole-par-input par-type="womens" hole-number="{{holeNumber}}" gcw-hole-tab-index="1">
+      </td>
+      <td><!-- spacer --></td>
+      <td ng-repeat="tee in course.tees">
+        <input type="text" class="form-control" gcw-hole-distance-input hole-number="{{holeNumber}}" tee="tee" gcw-hole-tab-index="{{2 + $index}}">
+      </td>
+      <td><!-- spacer --></td>
+      <td ng-class="{'has-error': handicapErrors.mens[$index]}">
+        <input type="text" class="form-control" gcw-hole-handicap-input handicap-type="mens" hole-number="{{holeNumber}}" gcw-hole-tab-index="{{2 + course.tees.length}}">
+      </td>
+      <td ng-class="{'has-error': handicapErrors.womens[$index]}">
+        <input type="text" class="form-control" gcw-hole-handicap-input handicap-type="womens" hole-number="{{holeNumber}}" gcw-hole-tab-index="{{3 + course.tees.length}}">
+      </td>
+    <tr>
+    <tr ng-repeat-end ng-if="!(($index + 1) % 9)">
+      <th>Total</th>
+      <th><!-- spacer --></th>
+      <th>{{sum(course.pars.mens) | number: 0}}</th>
+      <th>{{sum(course.pars.womens) | number: 0}}</th>
+      <th><!-- spacer --></th>
+      <th ng-repeat="tee in course.tees">
+        {{sum(course.distances[$index]) | number: 0}}
+      </th>
+      <th><!-- spacer --></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </tbody>
+</table>

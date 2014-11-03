@@ -1,0 +1,17 @@
+<!-- before +/- icons -->
+<div class="tee-actions tee-actions-before">
+  <a href="" ng-click="addTeeBefore(tee)"><i class="fa fa-plus-square-o"></i></a>
+  <a href="" ng-click="removeTee(tee)"><i class="fa fa-minus-square-o"></i></a>
+</div>
+
+<!-- colorpicker -->
+<div colorpicker colorpicker-with-input="true" class="tee-box-swatch" ng-style="{ 'background-color': tee.color }" ng-model="tee.color"></div>
+
+<!-- name input -->
+<input type="text" class="form-control input-sm" placeholder="Name" ng-model="tee.name">
+
+<!-- after +/- icons -->
+<div class="tee-actions tee-actions-after">
+  <a href="" ng-click="removeTee(tee)"><i class="fa fa-minus-square-o"></i></a>
+  <a href="" ng-click="addTeeAfter(tee)"><i class="fa fa-plus-square-o"></i></a>
+</div>

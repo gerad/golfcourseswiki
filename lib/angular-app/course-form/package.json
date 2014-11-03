@@ -1,0 +1,8 @@
+{
+  "main": "./course-form.js",
+  "browserify": {
+    "transform": [
+      "gcw/browserify-html"
+    ]
+  }
+}

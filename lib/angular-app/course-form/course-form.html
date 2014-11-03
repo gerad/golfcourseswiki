@@ -1,0 +1,56 @@
+<form role="form" class="course-form">
+  <!-- Course Name -->
+  <div class="form-group">
+    <label for="course-name">Name</label>
+    <input type="text" class="form-control" id="course-name" placeholder="Course name" gcw-course-name-input>
+  </div>
+
+  <!-- Course Address -->
+  <div class="form-group">
+    <label for="course-address">Address</label>
+    <input type="text" class="form-control" id="course-address" placeholder="Course address" gcw-course-address-input>
+  </div>
+
+  <!-- Course Phone -->
+  <div class="form-group">
+    <label for="course-phone">Phone</label>
+    <input type="text" class="form-control" id="course-phone" placeholder="Course phone" gcw-course-phone-input>
+  </div>
+
+  <!-- Course Website -->
+  <div class="form-group">
+    <label for="course-website">Website</label>
+    <input type="text" class="form-control" id="course-website" placeholder="Course website" gcw-course-website-input>
+  </div>
+
+  <div class="form-group">
+    <label>Number of Holes</label>
+    <div>
+      <label class="radio-inline">
+        <input type="radio" gcw-course-hole-count-input ng-value=9>
+        9 holes
+      </label>
+      <label class="radio-inline">
+        <input type="radio" gcw-course-hole-count-input ng-value=18>
+        18 holes
+      </label>
+    <div>
+  </div>
+
+  <gcw-tab-index-group>
+    <!-- front nine -->
+    <div class="form-group">
+      <label>Front Nine</label>
+      <gcw-hole-inputs></gcw-hole-inputs>
+    </div>
+
+    <!-- back nine -->
+    <div class="form-group" ng-if="course.holeCount == 18">
+      <label>Back Nine</label>
+      <gcw-hole-inputs side="back"></gcw-hole-inputs>
+    </div>
+  </gcw-tab-index-group>
+
+  <button type="submit" class="btn btn-primary" ng-click="add(course)">Add course</button>
+  <a class="btn btn-default" href="#/">Cancel</a>
+</form>
