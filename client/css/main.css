@@ -12,6 +12,10 @@
   height: 15px;
 }
 
+input.ng-invalid.ng-touched {
+  border-color: firebrick;
+}
+
 /* course form styles */
 
 .course-form .tee-header {
