@@ -21,7 +21,7 @@
     </tr>
   </thead>
   <tbody gcw-tab-index-group>
-    <tr ng-repeat-start="holeNumber in holeNumbers">
+    <tr ng-repeat="holeNumber in holeNumbers">
       <td>{{holeNumber}}</td>
       <td><!-- spacer --></td>
       <td>
@@ -35,14 +35,14 @@
         <input type="text" class="form-control" gcw-hole-distance-input hole-number="{{holeNumber}}" tee="tee" gcw-hole-tab-index="{{2 + $index}}">
       </td>
       <td><!-- spacer --></td>
-      <td ng-class="{'has-error': handicapErrors.mens[$index]}">
+      <td>
         <input type="text" class="form-control" gcw-hole-handicap-input handicap-type="mens" hole-number="{{holeNumber}}" gcw-hole-tab-index="{{2 + course.tees.length}}">
       </td>
-      <td ng-class="{'has-error': handicapErrors.womens[$index]}">
+      <td>
         <input type="text" class="form-control" gcw-hole-handicap-input handicap-type="womens" hole-number="{{holeNumber}}" gcw-hole-tab-index="{{3 + course.tees.length}}">
       </td>
     <tr>
-    <tr ng-repeat-end ng-if="!(($index + 1) % 9)">
+    <tr>
       <th>Total</th>
       <th><!-- spacer --></th>
       <th>{{sum(course.pars.mens) | number: 0}}</th>
